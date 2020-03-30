@@ -6,12 +6,23 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 public class HealingClient {
 
     private final String baseUrl;
 
     public HealingClient(String baseUrl) {
         this.baseUrl = baseUrl;
+    }
+
+    public HealingClient(String host, Integer port) throws URISyntaxException {
+        this.baseUrl = new URI("http", null, host, port, null, null, null).normalize().toString();
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
     public String initReport(){

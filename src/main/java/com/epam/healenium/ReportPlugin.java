@@ -22,7 +22,7 @@ public class ReportPlugin implements Plugin<Project> {
         ReportExtension extension = project.getExtensions().create("options", ReportExtension.class, project);
         TaskContainer taskContainer = project.getTasks();
 
-        TaskProvider<InitReportAction> initReportTask = buildInitTask(taskContainer, extension);
+        TaskProvider<InitReportAction> initReportTask = buildInitTask(taskContainer);
         TaskProvider<BuildReportAction> buildReportTask = buildCompleteTask(taskContainer, extension);
 
         project.getTasksByName("test", false).forEach(it-> {
@@ -34,29 +34,10 @@ public class ReportPlugin implements Plugin<Project> {
     /**
      *
      * @param taskContainer
-     * @param extension
      * @return
      */
-    private TaskProvider<InitReportAction> buildInitTask(TaskContainer taskContainer, ReportExtension extension){
-
-        TaskProvider<InitReportAction> task = taskContainer.register(
-                InitReportAction.ACTION_NAME,
-                InitReportAction.class,
-                initAction -> initAction.getServerUrl().set(extension.getServerUrl())
-        );
-
-        task.configure(action-> action.onlyIf(it-> {
-            String url = extension.getServerUrl().getOrElse("");
-            boolean isEnabled = !url.isEmpty();
-            if(isEnabled){
-                logger.info("Use remote server url: {} ", url);
-            } else {
-                logger.warn("No server url specified!");
-            }
-            return isEnabled;
-        }));
-
-        return task;
+    private TaskProvider<InitReportAction> buildInitTask(TaskContainer taskContainer){
+        return taskContainer.register(InitReportAction.ACTION_NAME, InitReportAction.class);
     }
 
     /**
@@ -75,11 +56,12 @@ public class ReportPlugin implements Plugin<Project> {
                 }
         );
         task.configure(action-> action.onlyIf(it-> {
-            String url = extension.getServerUrl().getOrElse("");
-            String key = extension.getSessionKey().getOrElse("");
-            return !url.isEmpty() && !key.isEmpty();
+            boolean isDisabled = extension.getSessionKey().getOrElse("").isEmpty();
+            if(isDisabled){
+                logger.warn("No session key was obtained!");
+            }
+            return !isDisabled;
         }));
-
         return task;
     }
 }
