@@ -5,8 +5,8 @@ import org.gradle.api.provider.Property;
 
 public class ReportExtension {
 
-    private Property<String> serverUrl;
-    private Property<String> sessionKey;
+    private final Property<String> serverUrl;
+    private final Property<String> sessionKey;
 
     public ReportExtension(Project project) {
         serverUrl = project.getObjects().property(String.class);
@@ -17,15 +17,8 @@ public class ReportExtension {
         return serverUrl;
     }
 
-    public void setServerUrl(Object url) {
-        this.serverUrl = (Property<String>) url;
-    }
-
     public Property<String> getSessionKey() {
         return sessionKey;
     }
 
-    public void setSessionKey(Object sessionKey) {
-        this.sessionKey = (Property<String>)sessionKey;
-    }
 }
