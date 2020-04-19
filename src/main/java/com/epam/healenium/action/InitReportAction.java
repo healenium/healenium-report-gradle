@@ -84,7 +84,7 @@ public class InitReportAction extends DefaultTask {
                     .filter(it -> it.endsWith(configFile))
                     .findFirst();
         } catch (Exception ex) {
-            logger.warn("Fail to walk though resources");
+            // no logging
         }
         File file = result.map(File::new)
                 .orElseGet(() -> {

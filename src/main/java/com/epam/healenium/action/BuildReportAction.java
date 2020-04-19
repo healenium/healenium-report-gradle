@@ -39,7 +39,7 @@ public class BuildReportAction extends DefaultTask {
         HealingClient client = new HealingClient(serverUrl.get());
         String reportUrl = client.buildReport(sessionKey.get());
         if(reportUrl != null && reportUrl.length() > 0){
-            logger.info("Report available at {}", Paths.get(client.getBaseUrl(), reportUrl));
+            logger.warn("Report available at {}", Paths.get(client.getBaseUrl(), reportUrl));
         }
     }
 
