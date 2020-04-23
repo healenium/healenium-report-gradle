@@ -2,12 +2,17 @@ package com.epam.healenium.action;
 
 import com.epam.healenium.client.HealingClient;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.logging.LogLevel;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
+import java.nio.file.Paths;
+
 public class BuildReportAction extends DefaultTask {
+
+    private final Logger logger = Logging.getLogger(BuildReportAction.class);
 
     public static final String ACTION_NAME = "buildReport";
 
@@ -31,11 +36,11 @@ public class BuildReportAction extends DefaultTask {
 
     @TaskAction
     public void makeReportRecord() {
-        System.out.println("Building report");
         HealingClient client = new HealingClient(serverUrl.get());
         String reportUrl = client.buildReport(sessionKey.get());
-        getLogger().log(LogLevel.INFO, "Report available at {}", reportUrl);
-        System.out.println("Report available at " + reportUrl);
+        if(reportUrl != null && reportUrl.length() > 0){
+            logger.warn("Report available at {}", Paths.get(client.getBaseUrl(), reportUrl));
+        }
     }
 
 }

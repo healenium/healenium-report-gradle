@@ -5,12 +5,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.gradle.api.logging.Logger;
+import org.gradle.api.logging.Logging;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public class HealingClient {
 
+    private final Logger logger = Logging.getLogger(HealingClient.class);
     private final String baseUrl;
 
     public HealingClient(String baseUrl) {
@@ -49,8 +52,14 @@ public class HealingClient {
             }
             Request request = reqBuilder.build();
             Response response = new OkHttpClient().newCall(request).execute();
-            return response.body().string();
+            String result = response.body().string();
+            if (response.code() != 200) {
+                logger.warn("External service call completes with error: {}", result);
+                return null;
+            }
+            return result;
         } catch (Exception ex){
+            logger.warn("Failed to perform POST request. Reason: {}", ex.getMessage());
             return null;
         }
     }
@@ -64,6 +73,7 @@ public class HealingClient {
             Response response = new OkHttpClient().newCall(request).execute();
             return response.body().string();
         } catch (Exception ex){
+            logger.warn("Failed to perform GET request", ex);
             return null;
         }
     }
