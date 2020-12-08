@@ -8,7 +8,8 @@ import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
-import java.nio.file.Paths;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class BuildReportAction extends DefaultTask {
 
@@ -35,11 +36,11 @@ public class BuildReportAction extends DefaultTask {
     }
 
     @TaskAction
-    public void makeReportRecord() {
+    public void makeReportRecord() throws MalformedURLException {
         HealingClient client = new HealingClient(serverUrl.get());
         String reportUrl = client.buildReport(sessionKey.get());
-        if(reportUrl != null && reportUrl.length() > 0){
-            logger.warn("Report available at {}", Paths.get(client.getBaseUrl(), reportUrl));
+        if (reportUrl != null && reportUrl.length() > 0) {
+            logger.warn("Report available at {}", new URL(new URL(client.getBaseUrl()), reportUrl));
         }
     }
 
