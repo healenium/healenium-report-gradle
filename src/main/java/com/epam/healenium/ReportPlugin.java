@@ -7,6 +7,7 @@ import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.api.tasks.TaskProvider;
 
@@ -18,7 +19,7 @@ public class ReportPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-
+        project.getPluginManager().apply(JavaPlugin.class);
         ReportExtension extension = project.getExtensions().create("options", ReportExtension.class, project);
         TaskContainer taskContainer = project.getTasks();
 
@@ -41,12 +42,11 @@ public class ReportPlugin implements Plugin<Project> {
     }
 
     /**
-     *
      * @param taskContainer
      * @param extension
      * @return
      */
-    private TaskProvider<BuildReportAction> buildCompleteTask(TaskContainer taskContainer, ReportExtension extension){
+    private TaskProvider<BuildReportAction> buildCompleteTask(TaskContainer taskContainer, ReportExtension extension) {
         TaskProvider<BuildReportAction> task = taskContainer.register(
                 BuildReportAction.ACTION_NAME,
                 BuildReportAction.class,
@@ -55,9 +55,9 @@ public class ReportPlugin implements Plugin<Project> {
                     buildAction.getSessionKey().set(extension.getSessionKey());
                 }
         );
-        task.configure(action-> action.onlyIf(it-> {
+        task.configure(action -> action.onlyIf(it -> {
             boolean isDisabled = extension.getSessionKey().getOrElse("").isEmpty();
-            if(isDisabled){
+            if (isDisabled) {
                 logger.warn("No session key was obtained!");
             }
             return !isDisabled;

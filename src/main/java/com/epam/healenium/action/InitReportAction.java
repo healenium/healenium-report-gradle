@@ -40,9 +40,9 @@ public class InitReportAction extends DefaultTask {
         Directory sourceDir = layout.getProjectDirectory().dir("src/test/resources");
 
         ReportExtension extension = getProject().getExtensions().findByType(ReportExtension.class);
-        if(extension == null) return;
+        if (extension == null) return;
 
-        findConfig(targetDir, sourceDir).ifPresent(it->{
+        findConfig(targetDir, sourceDir).ifPresent(it -> {
             try {
                 Properties configProperty = loadConfig(it);
                 // normalize
@@ -69,14 +69,14 @@ public class InitReportAction extends DefaultTask {
 
                 // append key info
                 uploadConfig(it, configProperty);
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 logger.error("Failed to perform init action", ex);
             }
         });
 
     }
 
-    private Optional<File> findConfig(Directory targetDir, Directory sourceDir){
+    private Optional<File> findConfig(Directory targetDir, Directory sourceDir) {
         Optional<String> result = Optional.empty();
         try (Stream<Path> walk = Files.walk(Paths.get(targetDir.toString()))) {
             result = walk.filter(Files::isRegularFile)
@@ -92,7 +92,7 @@ public class InitReportAction extends DefaultTask {
                     Path toPath = Paths.get(String.valueOf(targetDir), configFile);
                     try {
                         Files.createDirectories(toPath.getParent());
-                        if(sourceDir.file(configFile).getAsFile().exists()){
+                        if (sourceDir.file(configFile).getAsFile().exists()) {
                             Files.copy(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING);
                         } else {
                             Files.createFile(toPath);
@@ -106,7 +106,7 @@ public class InitReportAction extends DefaultTask {
         return Optional.ofNullable(file);
     }
 
-    private void normalizeProperties(Properties configProperty){
+    private void normalizeProperties(Properties configProperty) {
         for (String name : configProperty.stringPropertyNames()) {
             String value = configProperty.getProperty(name);
             if (value == null || value.isEmpty()) {
