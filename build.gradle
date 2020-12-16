@@ -26,9 +26,9 @@ gradlePlugin {
 }
 
 dependencies {
-    compile gradleApi()
-    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.3.1'
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
+    implementation gradleApi()
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.3.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.9'
 
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.1")
